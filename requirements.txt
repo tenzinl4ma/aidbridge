@@ -1,0 +1,7 @@
+Flask
+redis
+python-dotenv
+groq
+sentence-transformers
+numpy
+gunicorn 

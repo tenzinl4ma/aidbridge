@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv
+venv/
+ENV/
+.env
+# Cache
+.cache/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Torch and Transformers cache
+~/.cache/torch/
+~/.cache/huggingface/
+.cache/torch/
+.cache/huggingface/.env

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AidBridge - Disaster Assistance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d32f2f; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        /* Style for the main submit button */
+        .submit-button {
+            background: #d32f2f;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-bottom: 10px; /* Add space below submit button */
+        }
+        .submit-button:hover { background: #b71c1c; }
+        /* Style for the See Dashboard button/link */
+        .dashboard-link {
+            background: #9c27b0; /* Purple color, different from submit */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            text-decoration: none; /* Remove default link underline */
+            display: inline-block; /* Make it behave like a button */
+            text-align: center; /* Center text */
+            width: 100%; /* Full width like submit button */
+            box-sizing: border-box; /* Include padding/border in width */
+        }
+        .dashboard-link:hover { background: #7b1fa2; } /* Darker purple on hover */
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success { background: #e8f5e8; border: 1px solid #4caf50; color: #2e7d32; }
+        .error { background: #ffebee; border: 1px solid #f44336; color: #c62828; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚑 AidBridge</h1>
+        <p style="text-align: center; color: #666;">Real-Time Disaster Assistance System</p>
+
+        <form id="helpForm">
+            <div class="form-group">
+                <label for="message">Describe Your Emergency:</label>
+                <textarea id="message" name="message" rows="4" required
+                    placeholder="Example: My house is collapsed after the earthquake. We are 4 people trapped. Near Kathmandu Durbar Square."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required
+                    placeholder="Specific address or landmark">
+            </div>
+
+            <div class="form-group">
+                <label for="contact">Contact (Optional):</label>
+                <input type="text" id="contact" name="contact"
+                    placeholder="Phone number or email">
+            </div>
+
+            <button type="submit" class="submit-button">Request Emergency Help</button>
+        </form>
+
+        <!-- Add the See Dashboard button/link here, outside the form -->
+        <a href="/dashboard" class="dashboard-link">See Dashboard</a>
+
+        <div id="response"></div>
+    </div>
+
+    <script>
+        document.getElementById('helpForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {
+                message: formData.get('message'),
+                location: formData.get('location'),
+                contact: formData.get('contact'),
+                timestamp: new Date().toISOString()
+            };
+
+            // Show loading
+            document.getElementById('response').innerHTML =
+                '<div class="status" style="background: #fff3e0; border: 1px solid #ff9800;">Sending your emergency request...</div>';
+
+            try {
+                const response = await fetch('/submit-emergency', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('response').innerHTML =
+                        `<div class="status success">✅ Emergency request submitted successfully! Request ID: ${result.request_id}</div>`;
+                    this.reset();
+                } else {
+                    document.getElementById('response').innerHTML =
+                        `<div class="status error">❌ Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('response').innerHTML =
+                    `<div class="status error">❌ Network error: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
